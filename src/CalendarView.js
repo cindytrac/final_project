@@ -1,5 +1,4 @@
 import React, { useState} from "react";
-import { hot } from "react-hot-loader/root";
 import ScheduleSelector from "react-schedule-selector";
 import DatePicker from 'react-date-picker'
 import 'react-date-picker/dist/DatePicker.css'
