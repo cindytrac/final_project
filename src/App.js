@@ -1,18 +1,12 @@
-
 import React from "react";
-import { hot } from 'react-hot-loader/root';
+import Main from "./Main";
 
 class App extends React.Component {
   render() {
-    const { name } = this.props;
     return (
-      <>
-        <h1>
-          Hello {name}
-        </h1>
-      </>
+      <Main />
     );
   }
 }
 
-export default hot(App);
+export default App;
