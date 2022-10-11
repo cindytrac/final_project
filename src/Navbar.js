@@ -23,10 +23,8 @@ function Navbar() {
                             </Link>
                         </li>
                     </ul>
-                    <form className="nav-item d-flex">
-                        <Link className="nav-link" to='/'>
-                            Log out
-                        </Link>
+                    <form className="nav-item d-flex" action="/logout" method="POST">
+                        <button className="nav-link btn btn-link" type="submit">Log out</button>
                     </form>
                 </div>
             </div>
