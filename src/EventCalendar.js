@@ -7,8 +7,8 @@ class EventCalendar extends React.Component {
                 <div className="card-body">
                     <h5 className="card-title d-inline">{this.props.title}</h5>
                     <div className="d-md-flex justify-content-md-end">
-                        <button className="btn btn-primary me-1">View</button>
-                        <button className="btn btn-danger">Delete</button>
+                        <button className="btn btn-primary view-button" type="submit">View</button>
+                        <button className="btn btn-danger ms-1">Delete</button>
                     </div>
                 </div>
             </div>

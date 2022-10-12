@@ -1,25 +1,14 @@
 import React from "react";
-import EventCalendar from "./EventCalendar";
+import EventGroup from "./EventGroup";
 import Navbar from "./NavBar";
-
-const calendars = [
-    {
-      title: "Webware Final Project"
-    },
-    {
-      title: "CS 1101 Homework"
-    },
-    {
-      title: "Exec Meeting"
-    }
-  ]
 
 class Home extends React.Component {
     render() {
         return (
             <div className="container">
                 <Navbar />
-                {calendars.map( (calendar, index) => <EventCalendar key={index} id={index} title={calendar.title} />)}
+                <EventGroup title="My Events" owner={true} />
+                <EventGroup title="Invitations" owner={false} />
             </div>
         );
     }

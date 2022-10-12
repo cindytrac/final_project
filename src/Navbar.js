@@ -18,7 +18,7 @@ function Navbar() {
                             </Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to='/calendar'>
+                            <Link className="nav-link" to='/create-calendar'>
                                 Create
                             </Link>
                         </li>

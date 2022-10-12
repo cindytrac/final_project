@@ -82,6 +82,12 @@ app.use( function(req, res, next) {
 //     res.render('index');
 //   });
 
+app.post('/view', (req, res) => {
+  console.log("in view post")
+  res.redirect('http://localhost:8080/edit-calendar')
+  console.log("in view post 2")
+})
+
 app.get('/*', function(req, res) {
     res.sendFile(__dirname + '/dist/index.html', function(err) {
         res.status(500).send(err)
