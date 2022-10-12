@@ -6,8 +6,7 @@ class EditView extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            schedule: [], //need to have this be the imported schedule of the user
-            creator: null
+            schedule: [] //need to have this be the imported schedule of the user
         }
 
       this.handleDisplay = this.handleDisplay.bind(this);
