@@ -9,6 +9,9 @@ class Home extends React.Component {
                 <Navbar />
                 <EventGroup title="My Events" owner={true} />
                 <EventGroup title="Invitations" owner={false} />
+                <Link className="edit-link" to='/edit-calendar'>
+                                View
+                            </Link>
             </div>
         );
     }
