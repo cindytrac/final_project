@@ -6,7 +6,7 @@ import icsToJson from 'ics-to-json';
 import Navbar from "./NavBar";
 import axios from 'axios';
 import "react-datepicker/dist/react-datepicker.css";
-  
+
 let origSchedule = [new Date('2022-10-01 10:00:00'),
 new Date('2022-10-01 11:00:00'),
 new Date('2022-10-01 12:00:00'),
@@ -88,55 +88,55 @@ class CalendarView extends React.Component {
 
     render() {
         if (this.state.weekType == 0) {
-        return (
-            <div>
-                <Navbar />
-                <div className="row justify-content-evenly">
-                    <div className="col-md-3 themed-grid-col">
-                        <div className="mb-5 mt-5m-auto">
-                            <p>Select the type of youFree you wish to create.</p>
-                            <Select
+            return (
+                <div>
+                    <Navbar />
+                    <div className="row justify-content-evenly">
+                        <div className="col-md-3 themed-grid-col">
+                            <div className="mb-5 mt-5m-auto">
+                                <p>Select the type of youFree you wish to create.</p>
+                                <Select
                                 value={this.state.label} 
-                                options={values} 
-                                onChange={this.handleDisplay}
-                            />
-                        </div>
-                        <p>Enter the information for your youFree below.</p>
-                        <div className="mb-5 m-auto">
+                                    options={values} 
+                                    onChange={this.handleDisplay}
+                                />
+                            </div>
+                            <p>Enter the information for your youFree below.</p>
+                            <div className="mb-5 m-auto">
                             <form onSubmit={this.handleInfoChange}>
                                 <div className="mb-3">
                                     <label className="form-label" htmlFor="youFreeName">Please enter a name:</label>
                                     <input className="form-control" type="text" name="youFreeName" id="youFreeName" required/>
-                                    <div className="invalid-feedback">Please provide a name for your youFree.</div> 
+                                <div className="invalid-feedback">Please provide a name for your youFree.</div> 
                                 </div>
-                                <div className="mb-3">
+                                    <div className="mb-3">
                                     <label className="form-label" htmlFor="startDate">Start Date:</label>
                                     <input className="form-control" type="text" name="startDate" id="startDate" required/>
                                     <div className="invalid-feedback">Please provide a start date.</div> 
-                                </div>
-                                <div className="mb-3">
-                                    <label className="form-label" htmlFor="numberDays">Number of Days:</label>
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label" htmlFor="numberDays">Number of Days:</label>
                                     <input className="form-control" type="text" name="numberDays" id="numberDays" required/>
-                                    <div className="invalid-feedback">Please provide a number of days.</div> 
-                                </div>
+                                            <div className="invalid-feedback">Please provide a number of days.</div> 
+                                    </div>
                                 <div className="d-grid d-sm-block text-center">
                                     <button type="submit" className="btn btn-primary">Create YouFree Template</button>
                                 </div>
                             </form>
+                            </div>
                         </div>
-                    </div>
-                    <div className="col-md-6 themed-grid-col">
-                        <div className="ms-5">
+                        <div className="col-md-6 themed-grid-col">
+                            <div className="ms-5">
                             <h1 className="text-center">My Availability</h1>
-                            <p className="text-center">Click and Drag to Toggle; Saved Immediately</p>
-                        </div>
-                        <div className="mb-5 m-auto">
-                            <form action="/create" method="POST">
-                                <div className="d-grid d-sm-block text-center">
-                                    <button type="submit" className="btn btn-primary">Create youFree?</button>
-                                </div>
-                            </form>
-                        </div>
+                                <p className="text-center">Click and Drag to Toggle; Saved Immediately</p>
+                            </div>
+                            <div className="mb-5 m-auto">
+                                <form action="/create" method="POST">
+                                    <div className="d-grid d-sm-block text-center">
+                                        <button type="submit" className="btn btn-primary">Create youFree?</button>
+                                    </div>
+                                </form>
+                            </div>
                         <ScheduleSelector
                             selection={this.state.schedule}
                             startDate={this.state.startDate}
@@ -151,27 +151,27 @@ class CalendarView extends React.Component {
                             hoveredColor={"#ADB2AE"}
                             onChange={this.handleState}
                         />
+                        </div>
                     </div>
                 </div>
-            </div>
-        );
-        }
-        else if (this.state.weekType == 1) {
-            return (
-                <div>
-                    <Navbar />
-                    <div className="row justify-content-evenly">
-                        <div className="col-md-3 themed-grid-col">
-                            <div className="mb-5 mt-5m-auto">
-                                <p>Select the type of youFree you wish to create.</p>
-                                <Select
+            );
+            }
+            else if (this.state.weekType == 1) {
+                return (
+                    <div>
+                        <Navbar />
+                        <div className="row justify-content-evenly">
+                            <div className="col-md-3 themed-grid-col">
+                                <div className="mb-5 mt-5m-auto">
+                                    <p>Select the type of youFree you wish to create.</p>
+                                    <Select
                                     value={this.state.label} 
-                                    options={values} 
-                                    onChange={this.handleDisplay}
-                                />
-                            </div>
-                            <p>Enter the information for your youFree below.</p>
-                            <div className="mb-5 m-auto">
+                                        options={values} 
+                                        onChange={this.handleDisplay}
+                                    />
+                                </div>
+                                <p>Enter the information for your youFree below.</p>
+                                <div className="mb-5 m-auto">
                                 <form onSubmit={this.handleNameChange}>
                                     <div className="mb-3">
                                         <label className="form-label" htmlFor="youFreeName">Please enter a name:</label>
@@ -180,24 +180,24 @@ class CalendarView extends React.Component {
                                     </div>
                                     <div className="d-grid d-sm-block text-center">
                                         <button type="submit" className="btn btn-primary">Create YouFree Template</button>
-                                    </div>
-                                </form>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
-                        <div className="col-md-6 themed-grid-col">
-                            <div className="ms-5">
+                            <div className="col-md-6 themed-grid-col">
+                                <div className="ms-5">
                                 <h1 className="text-center">My Availability</h1>
-                                <p className="text-center">Click and Drag to Toggle; Saved Immediately</p>
-                            </div>
-                            <div className="mb-5 m-auto">
-                                <form action="/create" method="POST">
-                                    <div className="d-grid d-sm-block text-center">
-                                        <button type="submit" className="btn btn-primary">Create youFree?</button>
-                                    </div>
-                                </form>
-                            </div>
+                                    <p className="text-center">Click and Drag to Toggle; Saved Immediately</p>
+                                </div>
+                                <div className="mb-5 m-auto">
+                                    <form action="/create" method="POST">
+                                        <div className="d-grid d-sm-block text-center">
+                                            <button type="submit" className="btn btn-primary">Create youFree?</button>
+                                        </div>
+                                    </form>
+                                </div>
                             <ScheduleSelector
-                                selection={this.state.schedule}
+                                    selection={this.state.schedule} 
                                 startDate={new Date("10-09-2022")}
                                 numDays={7}
                                 minTime={8}
@@ -209,28 +209,28 @@ class CalendarView extends React.Component {
                                 selectedColor={"rgba(80, 182, 51, 1)"}
                                 hoveredColor={"#ADB2AE"}
                                 onChange={this.handleState}
-                            />
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-        else if (this.state.weekType === 2) {
-            return (
-                <div>
-                    <Navbar />
-                    <div className="row justify-content-evenly">
-                        <div className="col-md-3 themed-grid-col">
-                            <div className="mb-5 mt-5m-auto">
-                                <p>Select the type of youFree you wish to create.</p>
-                                <Select
-                                    value={this.state.label} 
-                                    options={values} 
-                                    onChange={this.handleDisplay}
                                 />
                             </div>
-                            <p>Enter the information for your youFree below.</p>
-                            <div className="mb-5 m-auto">
+                        </div>
+                    </div>
+                );
+            }
+        else if (this.state.weekType === 2) {
+                return (
+                    <div>
+                        <Navbar />
+                        <div className="row justify-content-evenly">
+                            <div className="col-md-3 themed-grid-col">
+                                <div className="mb-5 mt-5m-auto">
+                                    <p>Select the type of youFree you wish to create.</p>
+                                    <Select
+                                    value={this.state.label} 
+                                        options={values} 
+                                        onChange={this.handleDisplay}
+                                    />
+                                </div>
+                                <p>Enter the information for your youFree below.</p>
+                                <div className="mb-5 m-auto">
                                 <form onSubmit={this.handleNameChange}>
                                     <div className="mb-3">
                                         <label className="form-label" htmlFor="youFreeName">Please enter a name:</label>
@@ -241,7 +241,7 @@ class CalendarView extends React.Component {
                                         <button type="submit" className="btn btn-primary">Create YouFree Template</button>
                                     </div>
                                 </form>
-                            </div>
+                                </div>
                             {/* <div className="mb-5 m-auto"> */}
                                 {/* Currently just shows the calendar */}
                                 {/* <DatePicker 
@@ -250,21 +250,21 @@ class CalendarView extends React.Component {
                                     onSelect={this.handleDateChange} 
                                 />
                             </div> */}
-                        </div>
-                        <div className="col-md-6 themed-grid-col">
-                            <div className="ms-5">
+                            </div>
+                            <div className="col-md-6 themed-grid-col">
+                                <div className="ms-5">
                                 <h1 className="text-center">My Availability</h1>
-                                <p className="text-center">Click and Drag to Toggle; Saved Immediately</p>
-                            </div>
-                            <div className="mb-5 m-auto">
-                                <form action="/create" method="POST">
-                                    <div className="d-grid d-sm-block text-center">
-                                        <button type="submit" className="btn btn-primary">Create youFree?</button>
-                                    </div>
-                                </form>
-                            </div>
+                                    <p className="text-center">Click and Drag to Toggle; Saved Immediately</p>
+                                </div>
+                                <div className="mb-5 m-auto">
+                                    <form action="/create" method="POST">
+                                        <div className="d-grid d-sm-block text-center">
+                                            <button type="submit" className="btn btn-primary">Create youFree?</button>
+                                        </div>
+                                    </form>
+                                </div>
                             <ScheduleSelector
-                                selection={this.state.schedule}
+                                        selection={this.state.schedule} 
                                 startDate={new Date("10-10-2022")}
                                 numDays={5}
                                 minTime={8}
@@ -276,14 +276,14 @@ class CalendarView extends React.Component {
                                 selectedColor={"rgba(80, 182, 51, 1)"}
                                 hoveredColor={"#ADB2AE"}
                                 onChange={this.handleState}
-                            />
-                        </div>
-                    </div>
+                                    />
+                                </div>
+                            </div>
 
-                </div>
-            );
+                        </div>
+                    );
+                }
         }
     }
-}
 
 export default CalendarView;

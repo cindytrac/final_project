@@ -19,8 +19,8 @@ class EditView extends React.Component {
     render() {
 
         if (creator == false) {
-            
-        }
+
+    }
         return (
             <div>
                 <Navbar />

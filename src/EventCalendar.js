@@ -1,6 +1,13 @@
 import React from "react";
 
 class EventCalendar extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            youFreeID: this.props.youFreeID
+        }
+    }
+
     render() {
         return (
             <div className="card mb-3">

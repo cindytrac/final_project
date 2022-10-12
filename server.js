@@ -24,7 +24,10 @@ app.use(express.urlencoded({ extended : true }));
 //Database connection
 const uri = "mongodb+srv://"+process.env.MONGO_USER+":"+process.env.MONGO_PASS+"@"+process.env.HOST+"/?retryWrites=true&w=majority";
 const client = new mongodb.MongoClient( uri, { useNewURLParser: true, useUnifiedTopology:true });
-let collection = null;
+let userCollection = null;
+let youFreeCollection = null;
+let currentUser = null;
+let totalYouFrees = 0;
 
 //connect to database and grab collection
 app.use( cookie({
@@ -37,12 +40,12 @@ client.connect()
     return client.db( 'test' ).collection( 'test' )
 })
   .then( __collection => {
-    collection = __collection
-    return collection.find({ }).toArray()
+    userCollection = __collection
+    return userCollection.find({ }).toArray()
 })
 
 app.post('/login', (req, res) => {
-  collection.find({username: req.body.username})
+  userCollection.find({username: req.body.username})
   .toArray()
   .then(result => {
     req.session.username = req.body.username
@@ -51,6 +54,7 @@ app.post('/login', (req, res) => {
     if (result.length > 0) {
       if (req.body.password === result[0].password) {
         req.session.login = true
+        currentUser = req.session.username
         // redirect to home page
         res.redirect('http://localhost:8080/home')
       } else {
@@ -59,7 +63,7 @@ app.post('/login', (req, res) => {
       }
     } else {
       req.body.data = []
-      collection.insertOne( req.body )
+      userCollection.insertOne( req.body )
       res.redirect('http://localhost:8080/home')
     }
   })
@@ -82,10 +86,77 @@ app.use( function(req, res, next) {
 //     res.render('index');
 //   });
 
+client.connect() 
+.then( () => {
+  return client.db( 'test' ).collection('youFrees')
+})
+.then( __collection => {
+  youFreeCollection = __collection
+  return youFreeCollection.find({ }).toArray()
+})
+
 app.post('/view', (req, res) => {
   console.log("in view post")
-  res.redirect('http://localhost:8080/edit-calendar')
+  res.redirect('http://localhost:8080/edit-calendar') //want to redirect with youFreeID
   console.log("in view post 2")
+})
+
+app.post('/create', async (req, res) => {
+  const scheudleVal = req.body.scheudle;
+  const creator = req.body.creator;
+  const youFreeID = totalYouFrees;
+  totalYouFrees += 1;
+  const current = userCollection.findOne({"username": creator})
+  let currentArray = current.created
+  currentArray.push(youFreeID)
+  userCollection.updateOne(
+    {username:creator}),
+    { $set: {"created": currentArray}}
+
+  userCollection.insertOne()
+
+  
+
+})
+
+app.get('/loadYF', async function(req, res) {
+  const data = await youFreeCollection.find({ }).toArray()
+  let body = {
+    currentUser: currentUser,
+    youFreeInfo: data
+  }
+  res.json(body);
+})
+
+app.get('/eventsYF', async function(req, res) {
+  let created = [];
+  let invited = [];
+  const current = await userCollection.find({"username":currentUser}).toArray()
+  const curCreated = current.created
+  const curInvited = current.invited
+
+  curCreated.forEach( async (element, index) => {
+    let youFreeID = element.youFreeID;
+    const cur = await youFreeCollection.findOne({"youFreeID": youFreeID})
+    let json = {
+      
+    }
+    created.push(youFreeCollection.findOne({"youFreeID": youFreeID}))
+  })
+
+  console.log("we doing all right");
+
+  const invitedYouFrees = userCollection.find({}).toArray().invited;
+  invitedYouFrees.forEach((element, index) => {
+    let youFreeID = element.youFreeID;
+    invited.append(youFreeCollection.findOne({"youFreeID": youFreeID}))
+  })
+
+  let body = {
+    createdYouFrees: created,
+    invitedYouFrees: invited
+  }
+  res.json(body);
 })
 
 app.get('/*', function(req, res) {
