@@ -1,26 +1,15 @@
 import React, { useState} from "react";
 import ScheduleSelector from "react-schedule-selector";
-import DatePicker from "react-datepicker";
 import Select from "react-select";
-import icsToJson from 'ics-to-json';
 import Navbar from "./NavBar";
 import axios from 'axios';
 import "react-datepicker/dist/react-datepicker.css";
 
-let origSchedule = [new Date('2022-10-01 10:00:00'),
-new Date('2022-10-01 11:00:00'),
-new Date('2022-10-01 12:00:00'),
-new Date('2022-10-01 13:00:00'),
-new Date('2022-10-01 14:00:00'),
-new Date('2022-10-02 12:00:00'),
-new Date('2022-10-02 13:00:00'),
-new Date('2022-10-02 14:00:00'),
-new Date('2022-10-02 15:00:00'),
-new Date('2022-10-02 16:00:00'),]
+const values = [
+    {label: "Custom Week", weekType: 0, dateFormat:"M/D"},
+    {label: "Blank Week", weekType: 1, dateFormat: "ddd"},
+]
 
-<<<<<<< HEAD
-let blankSchedule = []
-=======
 class Template extends React.Component {
     constructor(props) {
         super(props)
@@ -35,13 +24,28 @@ class Template extends React.Component {
     handleState = (newSchedule) => {
         this.setState({schedule: newSchedule});
     }
->>>>>>> 74c5f47e0f9786c89b45061db8dfa96a3f64d55e
 
-const values = [
-    {label: "Custom Week", weekType: 0, startDate: new Date(), numDays: 7, dateFormat:"M/D"},
-    {label: "Blank Week", weekType: 1, startDate: new Date("10-09-2022"), numDays:7, dateFormat:"ddd"},
-    {label: "Blank Work Week", weekType: 2, startDate: new Date("10-10-2022"), numDays: 5, dateFormat:"ddd"},
-]
+    render() {
+        return(
+            <div>
+                <ScheduleSelector
+                    selection={this.state.schedule}
+                    startDate={this.props.startDate}
+                    numDays={this.props.numDays}
+                    minTime={8}
+                    maxTime={22}
+                    dateFormat={this.props.dateFormat}
+                    timeFormat={"h:mm a"}
+                    hourlyChunks={1}
+                    unselectedColor={"#FA3D24"}
+                    selectedColor={"rgba(80, 182, 51, 1)"}
+                    hoveredColor={"#ADB2AE"}
+                    onChange={this.handleState}
+                    />
+            </div>
+        )
+    }
+}
 
 class CalendarView extends React.Component {
     constructor(props) {
@@ -50,61 +54,46 @@ class CalendarView extends React.Component {
             weekType: 0,
             name: "Hello",
             schedule: [],
-            otherSchedule: origSchedule,
-            label: "Custom Week",
+            dateFormat: "M/D",
+            label: null,
             startDate: new Date(),
-            numDays:7, 
-            // selectedOption: {
-            //     label: "Blank Week",
-            //     startDate: new Date("10-09-2022"),
-            //     numDays: 5,
-            //     dateFormat: "ddd"
-            // },
-            //selectedFile: null,
-            days: {
-                from: { year: 2022, month: 10, day: 2},
-                to: { year: 2022, month: 10, day: 5 }
-            },
-            // selectedDate: new Date("10-13-2022")
+            numDays: 7, 
+            minTime: 8,
+            maxTime: 22,
+            ready: false
         }
 
-    //   this.onFileChange = this.onFileChange.bind(this);
       this.handleDisplay = this.handleDisplay.bind(this);
-      this.handleState = this.handleState.bind(this);
-      this.handleInfoChange = this.handleInfoChange.bind(this);
+      this.handleUpdate = this.handleUpdate.bind(this);
+      this.handleCallBack = this.handleCallBack.bind(this);
+      this.handleDateChange = this.handleDateChange.bind(this);
+      this.handleDaysChange = this.handleDaysChange.bind(this);
+      this.handleNumChange = this.handleNumChange.bind(this);
+    //   this.handleMinChange = this.handleMinChange.bind(this);
+    //   this.handleMaxChange = this.handleMaxChange.bind(this);
       this.submitCalendar = this.submitCalendar.bind(this);
     }
       
     handleDisplay = selectedOption => {
-        this.setState({ weekType: selectedOption.weekType})
+        this.setState({ready: false});
+        this.setState({ weekType: selectedOption.weekType});
+        this.setState({ label: selectedOption.label});
+        this.setState({ dateFormat: selectedOption.dateFormat})
     };
 
-    handleState = newSchedule => {
+    handleCallBack = (newSchedule) => {
         this.setState({ schedule: newSchedule })
-<<<<<<< HEAD
-        this.setState({ otherSchedule: [...origSchedule, ...newSchedule]})
-        // console.log((this.state.schedule[0]));
-=======
     }
 
     handleUpdate = () => {
         this.setState({ ready: true });
->>>>>>> 74c5f47e0f9786c89b45061db8dfa96a3f64d55e
     }
 
     handleNameChange = newName => {
-        this.setState({name: newName});
-        // console.log(this.state.name);
+        this.setState({ready: false});
+        this.setState({name: newName.target.value});
     }
 
-<<<<<<< HEAD
-    handleInfoChange = newInfo => {
-        console.log(newInfo);
-        this.setState({startDate: new Date(newInfo.startDate)});
-        this.setState({numDays: newInfo.numberDays})
-        this.setState({name: newName});
-      };
-=======
     handleDateChange = newDate => {
         this.setState({ready: false});
         const date = newDate.target.value;
@@ -181,10 +170,10 @@ class CalendarView extends React.Component {
                 break;
         }
     }
->>>>>>> 74c5f47e0f9786c89b45061db8dfa96a3f64d55e
 
     render() {
-        if (this.state.weekType == 0) {
+        if (this.state.ready === false) {
+            if (this.state.weekType === 0) {
             return (
                 <div>
                     <Navbar />
@@ -193,38 +182,47 @@ class CalendarView extends React.Component {
                             <div className="mb-5 mt-5m-auto">
                                 <p>Select the type of youFree you wish to create.</p>
                                 <Select
-                                value={this.state.label} 
+                                    // value={this.state.label} 
                                     options={values} 
+                                    placeholder={this.state.label}
                                     onChange={this.handleDisplay}
                                 />
                             </div>
                             <p>Enter the information for your youFree below.</p>
                             <div className="mb-5 m-auto">
-                            <form onSubmit={this.handleInfoChange}>
                                 <div className="mb-3">
                                     <label className="form-label" htmlFor="youFreeName">Please enter a name:</label>
-                                    <input className="form-control" type="text" name="youFreeName" id="youFreeName" required/>
+                                    <input className="form-control" type="text" name="youFreeName" id="youFreeName" onChange={this.handleNameChange} required/>
                                 <div className="invalid-feedback">Please provide a name for your youFree.</div> 
                                 </div>
                                     <div className="mb-3">
-                                    <label className="form-label" htmlFor="startDate">Start Date:</label>
-                                    <input className="form-control" type="text" name="startDate" id="startDate" required/>
+                                        <label className="form-label" htmlFor="startDate">Start Date (mm-dd-yyyy):</label>
+                                        <input className="form-control" type="text" name="startDate" id="startDate" onChange={this.handleDateChange} required/>
                                     <div className="invalid-feedback">Please provide a start date.</div> 
                                     </div>
                                     <div className="mb-3">
                                         <label className="form-label" htmlFor="numberDays">Number of Days:</label>
-                                    <input className="form-control" type="text" name="numberDays" id="numberDays" required/>
+                                            <input className="form-control" type="text" name="numberDays" id="numberDays" onChange={this.handleNumChange} required/>
                                             <div className="invalid-feedback">Please provide a number of days.</div> 
                                     </div>
+                                    {/* <div className="mb-3">
+                                        <label className="form-label" htmlFor="minTime">Min Time (1,2,etc):</label>
+                                        <input className="form-control" type="text" name="minTime" id="minTime" onChange={this.handleMinChange} required/>
+                                        <div className="invalid-feedback">Please provide a minimum time.</div> 
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label" htmlFor="maxTime">Max Time (20,21,etc):</label>
+                                        <input className="form-control" type="text" name="maxTime" id="maxTime" onChange={this.handleMaxChange} required/>
+                                        <div className="invalid-feedback">Please provide a maximum time.</div> 
+                                    </div> */}
                                 <div className="d-grid d-sm-block text-center">
-                                    <button type="submit" className="btn btn-primary">Create YouFree Template</button>
+                                    <button type="submit" className="btn btn-primary" onClick={this.handleUpdate}>Update Template</button>
                                 </div>
-                            </form>
                             </div>
                         </div>
                         <div className="col-md-6 themed-grid-col">
                             <div className="ms-5">
-                            <h1 className="text-center">My Availability</h1>
+                                <h1 className="text-center">{this.state.name}</h1>
                                 <p className="text-center">Click and Drag to Toggle; Saved Immediately</p>
                             </div>
                             <div className="mb-5 m-auto">
@@ -232,20 +230,6 @@ class CalendarView extends React.Component {
                                     <button type="submit" className="btn btn-primary" onClick={this.handleCreate}>Create youFree?</button>
                                 </div>
                             </div>
-                        <ScheduleSelector
-                            selection={this.state.schedule}
-                            startDate={this.state.startDate}
-                            numDays={this.state.numDays}
-                            minTime={8}
-                            maxTime={22}
-                            hourlyChunks={1}
-                            dateFormat={"M/D"}
-                            timeFormat={"h:mm a"}
-                            unselectedColor={"#FA3D24"}
-                            selectedColor={"rgba(80, 182, 51, 1)"}
-                            hoveredColor={"#ADB2AE"}
-                            onChange={this.handleState}
-                        />
                         </div>
                     </div>
                 </div>
@@ -260,28 +244,47 @@ class CalendarView extends React.Component {
                                 <div className="mb-5 mt-5m-auto">
                                     <p>Select the type of youFree you wish to create.</p>
                                     <Select
-                                    value={this.state.label} 
+                                        // value={this.state.label} 
                                         options={values} 
+                                        placeholder={this.state.label}
                                         onChange={this.handleDisplay}
                                     />
                                 </div>
                                 <p>Enter the information for your youFree below.</p>
                                 <div className="mb-5 m-auto">
-                                <form onSubmit={this.handleNameChange}>
                                     <div className="mb-3">
                                         <label className="form-label" htmlFor="youFreeName">Please enter a name:</label>
-                                        <input className="form-control" type="text" name="youFreeName" id="youFreeName" required/>
+                                        <input className="form-control" type="text" name="youFreeName" id="youFreeName" onChange={this.handleNameChange} required/>
                                         <div className="invalid-feedback">Please provide a name for your youFree.</div> 
                                     </div>
+                                    <div className="mb-3">
+                                        <label className="form-label" htmlFor="startDate">Choose Starting Day (Mon,Tue,etc):</label>
+                                        <input className="form-control" type="text" name="startDate" id="startDate" onChange={this.handleDaysChange} required/>
+                                        <div className="invalid-feedback">Please provide a day of the week.</div> 
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label" htmlFor="numberDays">Number of Days:</label>
+                                        <input className="form-control" type="text" name="numberDays" id="numberDays" onChange={this.handleNumChange} required/>
+                                        <div className="invalid-feedback">Please provide a number of days.</div> 
+                                    </div>
+                                    {/* <div className="mb-3">
+                                        <label className="form-label" htmlFor="minTime">Min Time (1,2,etc):</label>
+                                        <input className="form-control" type="text" name="minTime" id="minTime" onChange={this.handleMinChange} required/>
+                                        <div className="invalid-feedback">Please provide a minimum time.</div> 
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label" htmlFor="maxTime">Max Time (20,21,etc):</label>
+                                        <input className="form-control" type="text" name="maxTime" id="maxTime" onChange={this.handleMaxChange} required/>
+                                        <div className="invalid-feedback">Please provide a maximum time.</div> 
+                                    </div> */}
                                     <div className="d-grid d-sm-block text-center">
-                                        <button type="submit" className="btn btn-primary">Create YouFree Template</button>
-                                        </div>
-                                    </form>
+                                        <button type="submit" className="btn btn-primary" onClick={this.handleUpdate}>Update Template</button>
+                                    </div>
                                 </div>
                             </div>
                             <div className="col-md-6 themed-grid-col">
                                 <div className="ms-5">
-                                <h1 className="text-center">My Availability</h1>
+                                    <h1 className="text-center">{this.state.name}</h1>
                                     <p className="text-center">Click and Drag to Toggle; Saved Immediately</p>
                                 </div>
                                 <div className="mb-5 m-auto">
@@ -291,26 +294,14 @@ class CalendarView extends React.Component {
                                         </div>
                                     </form>
                                 </div>
-                            <ScheduleSelector
-                                    selection={this.state.schedule} 
-                                startDate={new Date("10-09-2022")}
-                                numDays={7}
-                                minTime={8}
-                                maxTime={22}
-                                hourlyChunks={1}
-                                dateFormat={"ddd"}
-                                timeFormat={"h:mm a"}
-                                unselectedColor={"#FA3D24"}
-                                selectedColor={"rgba(80, 182, 51, 1)"}
-                                hoveredColor={"#ADB2AE"}
-                                onChange={this.handleState}
-                                />
                             </div>
                         </div>
                     </div>
                 );
             }
-        else if (this.state.weekType === 2) {
+        }
+        else {
+            if (this.state.weekType === 0) {
                 return (
                     <div>
                         <Navbar />
@@ -319,36 +310,47 @@ class CalendarView extends React.Component {
                                 <div className="mb-5 mt-5m-auto">
                                     <p>Select the type of youFree you wish to create.</p>
                                     <Select
-                                    value={this.state.label} 
+                                        // value={this.state.label} 
                                         options={values} 
+                                        placeholder={this.state.label}
                                         onChange={this.handleDisplay}
                                     />
                                 </div>
                                 <p>Enter the information for your youFree below.</p>
                                 <div className="mb-5 m-auto">
-                                <form onSubmit={this.handleNameChange}>
                                     <div className="mb-3">
                                         <label className="form-label" htmlFor="youFreeName">Please enter a name:</label>
-                                        <input className="form-control" type="text" name="youFreeName" id="youFreeName" required/>
-                                        <div className="invalid-feedback">Please provide a name for your youFree.</div> 
+                                        <input className="form-control" type="text" name="youFreeName" id="youFreeName" onChange={this.handleNameChange} required/>
+                                    <div className="invalid-feedback">Please provide a name for your youFree.</div> 
                                     </div>
+                                        <div className="mb-3">
+                                            <label className="form-label" htmlFor="startDate">Start Date (mm-dd-yyyy):</label>
+                                            <input className="form-control" type="text" name="startDate" id="startDate" onChange={this.handleDateChange} required/>
+                                        <div className="invalid-feedback">Please provide a start date.</div> 
+                                        </div>
+                                        <div className="mb-3">
+                                            <label className="form-label" htmlFor="numberDays">Number of Days:</label>
+                                                <input className="form-control" type="text" name="numberDays" id="numberDays" onChange={this.handleNumChange} required/>
+                                                <div className="invalid-feedback">Please provide a number of days.</div> 
+                                        </div>
+                                        {/* <div className="mb-3">
+                                            <label className="form-label" htmlFor="minTime">Min Time (1,2,etc):</label>
+                                            <input className="form-control" type="text" name="minTime" id="minTime" onChange={this.handleMinChange} required/>
+                                            <div className="invalid-feedback">Please provide a minimum time.</div> 
+                                        </div>
+                                        <div className="mb-3">
+                                            <label className="form-label" htmlFor="maxTime">Max Time (20,21,etc):</label>
+                                            <input className="form-control" type="text" name="maxTime" id="maxTime" onChange={this.handleMaxChange} required/>
+                                            <div className="invalid-feedback">Please provide a maximum time.</div> 
+                                        </div> */}
                                     <div className="d-grid d-sm-block text-center">
-                                        <button type="submit" className="btn btn-primary">Create YouFree Template</button>
+                                        <button type="submit" className="btn btn-primary" onClick={this.handleUpdate}>Update Template</button>
                                     </div>
-                                </form>
                                 </div>
-                            {/* <div className="mb-5 m-auto"> */}
-                                {/* Currently just shows the calendar */}
-                                {/* <DatePicker 
-                                    selected={this.state.selectedDate}
-                                    onChange={this.handleDateChange}
-                                    onSelect={this.handleDateChange} 
-                                />
-                            </div> */}
                             </div>
                             <div className="col-md-6 themed-grid-col">
                                 <div className="ms-5">
-                                <h1 className="text-center">My Availability</h1>
+                                    <h1 className="text-center">{this.state.name}</h1>
                                     <p className="text-center">Click and Drag to Toggle; Saved Immediately</p>
                                 </div>
                                 <div className="mb-5 m-auto">
@@ -358,27 +360,95 @@ class CalendarView extends React.Component {
                                         </div>
                                     </form>
                                 </div>
-                            <ScheduleSelector
+                                <Template 
+                                    selection={this.state.schedule} 
+                                    startDate={this.state.startDate} 
+                                    numDays={this.state.numDays}
+                                    dateFormat={this.state.dateFormat}
+                                    // minTime={this.state.minTime}
+                                    // maxTime={this.state.maxTime}
+                                    parentCallBack = {this.handleCallBack}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+            else if (this.state.weekType == 1) {
+                return (
+                    <div>
+                        <Navbar />
+                        <div className="row justify-content-evenly">
+                            <div className="col-md-3 themed-grid-col">
+                                <div className="mb-5 mt-5m-auto">
+                                    <p>Select the type of youFree you wish to create.</p>
+                                    <Select
+                                        // value={this.state.label} 
+                                        options={values} 
+                                        placeholder={this.state.label}
+                                        onChange={this.handleDisplay}
+                                    />
+                                </div>
+                                <p>Enter the information for your youFree below.</p>
+                                <div className="mb-5 m-auto">
+                                    <div className="mb-3">
+                                        <label className="form-label" htmlFor="youFreeName">Please enter a name:</label>
+                                        <input className="form-control" type="text" name="youFreeName" id="youFreeName" onChange={this.handleNameChange} required/>
+                                        <div className="invalid-feedback">Please provide a name for your youFree.</div> 
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label" htmlFor="startDate">Choose Starting Day (Mon,Tue,etc):</label>
+                                        <input className="form-control" type="text" name="startDate" id="startDate" onChange={this.handleDaysChange} required/>
+                                        <div className="invalid-feedback">Please provide a day of the week.</div> 
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label" htmlFor="numberDays">Number of Days:</label>
+                                        <input className="form-control" type="text" name="numberDays" id="numberDays" onChange={this.handleNumChange} required/>
+                                        <div className="invalid-feedback">Please provide a number of days.</div> 
+                                    </div>
+                                    {/* <div className="mb-3">
+                                        <label className="form-label" htmlFor="minTime">Min Time (1,2,etc):</label>
+                                        <input className="form-control" type="text" name="minTime" id="minTime" onChange={this.handleMinChange} required/>
+                                        <div className="invalid-feedback">Please provide a minimum time.</div> 
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label" htmlFor="maxTime">Max Time (20,21,etc):</label>
+                                        <input className="form-control" type="text" name="maxTime" id="maxTime" onChange={this.handleMaxChange} required/>
+                                        <div className="invalid-feedback">Please provide a maximum time.</div> 
+                                    </div> */}
+                                    <div className="d-grid d-sm-block text-center">
+                                        <button type="submit" className="btn btn-primary" onClick={this.handleUpdate}>Update Template</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-md-6 themed-grid-col">
+                                <div className="ms-5">
+                                    <h1 className="text-center">{this.state.name}</h1>
+                                    <p className="text-center">Click and Drag to Toggle; Saved Immediately</p>
+                                </div>
+                                <div className="mb-5 m-auto">
+                                    <form action="/create" method="POST">
+                                        <div className="d-grid d-sm-block text-center">
+                                            <button type="submit" className="btn btn-primary">Create youFree?</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                    <Template 
                                         selection={this.state.schedule} 
-                                startDate={new Date("10-10-2022")}
-                                numDays={5}
-                                minTime={8}
-                                maxTime={22}
-                                hourlyChunks={1}
-                                dateFormat={"ddd"}
-                                timeFormat={"h:mm a"}
-                                unselectedColor={"#FA3D24"}
-                                selectedColor={"rgba(80, 182, 51, 1)"}
-                                hoveredColor={"#ADB2AE"}
-                                onChange={this.handleState}
+                                        startDate={this.state.startDate} 
+                                        numDays={this.state.numDays}
+                                        dateFormat={this.state.dateFormat}
+                                        // minTime={this.state.minTime}
+                                        // maxTime={this.state.maxTime}
+                                        parentCallBack = {this.handleCallBack}
                                     />
                                 </div>
                             </div>
-
                         </div>
                     );
                 }
         }
     }
+}
 
 export default CalendarView;
