@@ -84,7 +84,7 @@ class CalendarView extends React.Component {
     handleCallBack = (newSchedule) => {
         this.setState({ schedule: newSchedule })
     }
-
+  
     handleUpdate = () => {
         this.setState({ ready: true });
     }
@@ -111,7 +111,7 @@ class CalendarView extends React.Component {
             startDate: this.state.startDate,
             numDays: this.state.numDays, 
         }
-        
+
         axios.post("/create", {json} )
         .then(res => {
             console.log(res.data)

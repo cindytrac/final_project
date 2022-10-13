@@ -1,46 +1,25 @@
-import axios from "axios";
 import React from "react";
-
-// const view = function(e) {
-//     e.preventDefault()
-//     let json = {
-//         name: this.props.name,
-//         users: this.props.users,
-//         creator: this.props.creator,
-//         availableTimes: this.props.availableTimes,
-//         youFreeID: this.props.youFreeID,
-//         dateFormat: this.props.dateFormat,
-//         numDays: this.props.numDays,
-//         startDate: this.props.startDate
-//       }
-//       let body = JSON.stringify(json)
-//       fetch( '/view', {
-//         method:'GET',
-//         body 
-//       })
-// }
-
-// window.onload = function() {
-//     const button = document.getElementById( "viewButton" )
-//     button.onclick = view
-// }
 
 class EventCalendar extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            name: "", 
+            name: "Holder", 
             ready: false
         }
     }
 
     handleClick( e ) {
-        e.preventDefault()
+        // e.preventDefault()
+
+        const json = {
+            "youFreeID": this.props.event.youFreeID
+        }
+
+        let body = JSON.stringify(json)
         fetch('/view', {
             method:'POST',
-            body: {
-                youFreeID: this.props.event.youFreeID
-            },
+            body,
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -52,21 +31,34 @@ class EventCalendar extends React.Component {
         window.location.href = "http://localhost:8080/edit-calendar"
     }
 
-    componentDidMount() {
-        axios.post("/grabName", {youFreeID: this.props.event.youFreeID})
-        .then(res => {
-            this.setState({ name: res.data.name })
+    componentDidMount( e ) {
+        // e.preventDefault()
+        const json = {
+            "youFreeID": this.props.event.youFreeID
+        }
+
+        let body = JSON.stringify(json)
+        fetch("/grabName", {
+            method:'POST',
+            body,
+            headers: {
+                'Content-Type': 'application/json'
+            }
         })
-        .then(res => this.setState({ ready: true}))
+        .then(res => res.json())
+        .then(json => {
+            this.setState({ name: json.name })
+            this.setState({ ready: true})
+        })
     }
 
     render() {
-        // this.componentDidMount()
+        this.componentDidMount()
         if (this.state.ready) {
             return (
                 <div className="card mb-3">
                     <div className="card-body">
-                        {/* <h5 className="card-title d-inline">{this.state.name}</h5> */}
+                        <h5 className="card-title d-inline">{this.state.name}</h5>
                         <div className="d-md-flex justify-content-md-end">
                         <button className="btn btn-primary view-button" type="submit" onClick={this.handleClick}>View</button>
                             <button className="btn btn-danger ms-1">Delete</button>
@@ -74,9 +66,6 @@ class EventCalendar extends React.Component {
                     </div>
                 </div>
             )
-        }
-        else {
-            <h1>HI</h1>
         }
     }
 }

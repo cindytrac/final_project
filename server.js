@@ -62,7 +62,7 @@ app.post('/login', (req, res) => {
       }
     } else {
       req.body.data = []
-      console.log(req.body.data)                   //SDFJHSDLKFJHHFD
+      console.log(req.body.data)                   //NEED TO FINISH
       userCollection.insertOne( req.body )
       res.redirect('http://localhost:8080/home')
     }
@@ -100,28 +100,34 @@ app.post('/view', (req, res) => {
 })
 
 app.post('/create', async (req, res) => {
+  console.log("HEHE")
+  console.log(req.body)
   const json = {
     name: req.body.name,
     users: [],
     creator: currentUser,
     availableTimes: [],
     dateFormat: req.body.dateFormat,
-    numDays: req.body.numDays
+    numDays: req.body.numDays,
+    youFreeID: ""
   }
   await youFreeCollection.insertOne(json)
   const result = await youFreeCollection.findOne({$and: [{"name" :req.body.name}, {"creator": currentUser}] })
-  const id = result._id
+  const id = result._id.toString()
+  await youFreeCollection.updateOne({$and: [{"name" :req.body.name}, {"creator": currentUser}] }, {$set: {"youFreeID": id}})
 
   const current = await userCollection.findOne({"username": currentUser})
-  let currentArray = current.created
+  currentArray = current.created
   const update = {
     youFreeID: id, 
     userAvail:[]
   }
   currentArray.push(update)
+
   await userCollection.updateOne(
-    {"username": currentUser}),
+    {"username": currentUser},
     { $set: {"created": currentArray}}
+  )
 
   res.redirect('http://localhost:8080/home')
 })
@@ -139,9 +145,14 @@ app.get('/eventsYF', async function(req, res) {
   let createdArray = [];
   let invitedArray = [];
   const current = await userCollection.findOne({"username":currentUser})
-  console.log(current.created)
   const curCreated = current.created
   const curInvited = current.invited
+
+  // for (let i = 0; i < curCreated.length; i++) {
+  //   let id = curCreated[i].youFreeID 
+  //   const result = await youFreeCollection.findOne({"_id": id})   
+  //   let objString = c[i]._id.toString()
+  // }
 
   let body = {
     "created": curCreated,
@@ -170,12 +181,14 @@ app.post('/getAvail', async function(req, res) {
 
 app.post('/grabName', async function(req, res) {
   const current = await youFreeCollection.find({}).toArray()
-  current.forEach((elem, index) => {
-    let objString = elem._id.toString()
+  let sendName = ""
+  for (let i = 0; i < current.length; i++) {
+    let objString = current[i]._id.toString()
     if (objString === req.body.youFreeID) {
-      res.json(elem.name)
+      sendName = current[i].name
     }
-  })
+  }
+  res.json(sendName)
 })
 
 app.get('/*', function(req, res) {

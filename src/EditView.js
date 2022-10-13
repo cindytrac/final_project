@@ -43,7 +43,7 @@ class EditView extends React.Component {
         //     id: id,
         //     creator:creator
         // }
-        
+
         // axios.post("/getAvail", {json} )
         // .then(res => {
         //     console.log(res.data.schedule)

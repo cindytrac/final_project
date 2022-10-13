@@ -2,6 +2,12 @@ import React from "react";
 import EventCalendar from "./EventCalendar";
 
 class EventGroup extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            events: this.props.events,
+        }
+    }
     render() {
         return (
             <div className="mb-5">

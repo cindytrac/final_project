@@ -2,13 +2,15 @@ import React from "react";
 
 window.onload = function() {
     const loginForm = document.querySelector(".needs-validation")
-    loginForm.addEventListener("submit", event => {
-        if (!loginForm.checkValidity()) {
-            event.preventDefault()
-            event.stopPropagation()
-            loginForm.classList.add("was-validated")
-        }
-    })
+    if (loginForm !== null) {
+        loginForm.addEventListener("submit", event => {
+            if (!loginForm.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+                loginForm.classList.add("was-validated")
+            }
+        })
+    }
 }
 
 class Login extends React.Component {
