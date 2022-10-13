@@ -14,10 +14,11 @@ class Home extends React.Component {
     }
 
     componentDidMount() {
-        axios.get("/eventsYF" )
+        axios.post("/eventsYF", {} )
         .then(res => {
             this.setState({ created: res.data.created })
             this.setState({ invited: res.data.invited })
+            console.log("FUCK")
         })
         .then(res => this.setState({ ready: true}))
     }

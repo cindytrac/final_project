@@ -27,7 +27,6 @@ const client = new mongodb.MongoClient( uri, { useNewURLParser: true, useUnified
 let userCollection = null;
 let youFreeCollection = null;
 let currentUser = null;
-let totalYouFrees = 0;
 
 //connect to database and grab collection
 app.use( cookie({
@@ -63,6 +62,7 @@ app.post('/login', (req, res) => {
       }
     } else {
       req.body.data = []
+      console.log(req.body.data)                   //SDFJHSDLKFJHHFD
       userCollection.insertOne( req.body )
       res.redirect('http://localhost:8080/home')
     }
@@ -92,7 +92,7 @@ client.connect()
 })
 
 app.post('/view', (req, res) => {
-  collection.find({username: ""})
+  youFreeCollection.find({"username": currentUser})
   .toArray()
   .then(result => {
     res.json({})
@@ -100,20 +100,30 @@ app.post('/view', (req, res) => {
 })
 
 app.post('/create', async (req, res) => {
-  console.log("hello?")
-  console.log(req.body)
-  const scheudleVal = req.body.scheudle;
-  const creator = req.body.creator;
-  const youFreeID = totalYouFrees;
-  totalYouFrees += 1;
-  const current = await userCollection.findOne({"username": creator})
+  const json = {
+    name: req.body.name,
+    users: [],
+    creator: currentUser,
+    availableTimes: [],
+    dateFormat: req.body.dateFormat,
+    numDays: req.body.numDays
+  }
+  await youFreeCollection.insertOne(json)
+  const result = await youFreeCollection.findOne({$and: [{"name" :req.body.name}, {"creator": currentUser}] })
+  const id = result._id
+
+  const current = await userCollection.findOne({"username": currentUser})
   let currentArray = current.created
-  currentArray.push(youFreeID)
+  const update = {
+    youFreeID: id, 
+    userAvail:[]
+  }
+  currentArray.push(update)
   await userCollection.updateOne(
-    {username:creator}),
+    {"username": currentUser}),
     { $set: {"created": currentArray}}
 
-  youFreeCollection.insertOne()
+  res.redirect('http://localhost:8080/home')
 })
 
 app.get('/loadYF', async function(req, res) {
@@ -125,26 +135,17 @@ app.get('/loadYF', async function(req, res) {
   res.json(body);
 })
 
-app.get('/eventsYF', async function(req, res) {
+app.post('/eventsYF', async function(req, res) {
   let createdArray = [];
   let invitedArray = [];
   const current = await userCollection.findOne({"username":currentUser})
+  console.log(current.created)
   const curCreated = current.created
   const curInvited = current.invited
 
-  for (let i=0; i < curCreated.length; i++) {
-    let cur = await youFreeCollection.findOne({"youFreeID": curCreated[i].youFreeID});
-    createdArray.push(cur)
-  }
-
-  for (let i=0; i < curInvited.length; i++) {
-    let cur = await youFreeCollection.findOne({"youFreeID": curInvited[i].youFreeID});
-    invitedArray.push(cur)
-  }
-
   let body = {
-    "created": createdArray,
-    "invited": invitedArray
+    "created": curCreated,
+    "invited": curInvited
   }
   res.json(body);
 })
@@ -165,6 +166,16 @@ app.post('/getAvail', async function(req, res) {
     }
   }
   res.json(selection);
+})
+
+app.post('/grabName', async function(req, res) {
+  const current = await youFreeCollection.find({}).toArray()
+  current.forEach((elem, index) => {
+    let objString = elem._id.toString()
+    if (objString === req.body.youFreeID) {
+      res.json(elem.name)
+    }
+  })
 })
 
 app.get('/*', function(req, res) {
