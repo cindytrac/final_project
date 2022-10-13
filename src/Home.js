@@ -3,19 +3,6 @@ import EventGroup from "./EventGroup";
 import Navbar from "./NavBar";
 
 class Home extends React.Component {
-<<<<<<< HEAD
-    render() {
-        return (
-            <div className="container">
-                <Navbar />
-                <EventGroup title="My Events" owner={true} />
-                <EventGroup title="Invitations" owner={false} />
-                <Link className="edit-link" to='/edit-calendar'>
-                                View
-                            </Link>
-            </div>
-        );
-=======
     constructor(props) {
         super(props)
         this.state = {
@@ -46,7 +33,6 @@ class Home extends React.Component {
                 </div>
             );
         }
->>>>>>> 74c5f47e0f9786c89b45061db8dfa96a3f64d55e
     }
 }
 
