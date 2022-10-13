@@ -135,7 +135,7 @@ app.get('/loadYF', async function(req, res) {
   res.json(body);
 })
 
-app.post('/eventsYF', async function(req, res) {
+app.get('/eventsYF', async function(req, res) {
   let createdArray = [];
   let invitedArray = [];
   const current = await userCollection.findOne({"username":currentUser})
