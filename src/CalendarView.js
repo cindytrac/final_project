@@ -18,7 +18,24 @@ new Date('2022-10-02 14:00:00'),
 new Date('2022-10-02 15:00:00'),
 new Date('2022-10-02 16:00:00'),]
 
+<<<<<<< HEAD
 let blankSchedule = []
+=======
+class Template extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            schedule: []
+        }
+
+    this.handleState = this.handleState.bind(this);
+
+    }
+
+    handleState = (newSchedule) => {
+        this.setState({schedule: newSchedule});
+    }
+>>>>>>> 74c5f47e0f9786c89b45061db8dfa96a3f64d55e
 
 const values = [
     {label: "Custom Week", weekType: 0, startDate: new Date(), numDays: 7, dateFormat:"M/D"},
@@ -64,8 +81,15 @@ class CalendarView extends React.Component {
 
     handleState = newSchedule => {
         this.setState({ schedule: newSchedule })
+<<<<<<< HEAD
         this.setState({ otherSchedule: [...origSchedule, ...newSchedule]})
         // console.log((this.state.schedule[0]));
+=======
+    }
+
+    handleUpdate = () => {
+        this.setState({ ready: true });
+>>>>>>> 74c5f47e0f9786c89b45061db8dfa96a3f64d55e
     }
 
     handleNameChange = newName => {
@@ -73,18 +97,91 @@ class CalendarView extends React.Component {
         // console.log(this.state.name);
     }
 
+<<<<<<< HEAD
     handleInfoChange = newInfo => {
         console.log(newInfo);
         this.setState({startDate: new Date(newInfo.startDate)});
         this.setState({numDays: newInfo.numberDays})
         this.setState({name: newName});
       };
+=======
+    handleDateChange = newDate => {
+        this.setState({ready: false});
+        const date = newDate.target.value;
+        if(date.length == 10) {
+            this.setState({startDate: new Date(date)}
+            )
+        }
+    }
+
+    handleCreate = event => {
+        const json = {
+            schedule:this.state.schedule,
+            name:this.state.name,
+            dateFormat: this.state.dateFormat,
+            startDate: this.state.startDate,
+            numDays: this.state.numDays, 
+        }
+        
+        axios.post("/create", {json} )
+        .then(res => {
+            console.log(res.data)
+        })
+    }
 
     submitCalendar = submit => {
-    for (let i = 0; i < this.state.schedule.length; i++) {
-        // console.log((typeof (this.state.schedule[0])));
+        for (let i = 0; i < this.state.schedule.length; i++) {
+            // console.log((typeof (this.state.schedule[0])));
+        }
+      }
+
+    // handleMinChange = newMin => {
+    //     this.setState({ready: false})
+    //     console.log("newMin: " + newMin.minTime);
+    //     this.setState({minTime: newMin.target.value});
+    //     console.log("state minTime: " + this.state.minTime);
+    // }
+
+    // handleMaxChange = newMax => {
+    //     this.setState({ready: false});
+    //     console.log("newMax: " + newMax);
+    //     this.setState({maxTime: newMax.target.value})
+    //     console.log("state maxTime: " + this.state.maxTime);
+    // }
+
+    handleNumChange = newNum => {
+        this.setState({ready: false});
+        this.setState({numDays: newNum.target.value})
     }
-  }
+
+    handleDaysChange = newDay => {
+        this.setState({ready: false});
+        const day = newDay.target.value;
+        switch (day) {
+            case "Sun": 
+                this.setState({startDate: new Date("10-09-2022")})
+                break;
+            case "Mon": 
+                this.setState({startDate: new Date("10-10-2022")})
+                break;
+            case "Tue": 
+                this.setState({startDate: new Date("10-11-2022")})
+                break;
+            case "Wed": 
+                this.setState({startDate: new Date("10-12-2022")})
+                break;
+            case "Thu": 
+                this.setState({startDate: new Date("10-13-2022")})
+                break;
+            case "Fri": 
+                this.setState({startDate: new Date("10-14-2022")})
+                break;
+            case "Sat": 
+                this.setState({startDate: new Date("10-15-2022")})
+                break;
+        }
+    }
+>>>>>>> 74c5f47e0f9786c89b45061db8dfa96a3f64d55e
 
     render() {
         if (this.state.weekType == 0) {
@@ -131,11 +228,9 @@ class CalendarView extends React.Component {
                                 <p className="text-center">Click and Drag to Toggle; Saved Immediately</p>
                             </div>
                             <div className="mb-5 m-auto">
-                                <form action="/create" method="POST">
-                                    <div className="d-grid d-sm-block text-center">
-                                        <button type="submit" className="btn btn-primary">Create youFree?</button>
-                                    </div>
-                                </form>
+                                <div className="d-grid d-sm-block text-center">
+                                    <button type="submit" className="btn btn-primary" onClick={this.handleCreate}>Create youFree?</button>
+                                </div>
                             </div>
                         <ScheduleSelector
                             selection={this.state.schedule}

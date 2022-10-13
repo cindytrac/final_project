@@ -7,8 +7,9 @@ const root = createRoot(document.getElementById("root"));
 root.render(
     <BrowserRouter>
         <App />
-    </BrowserRouter>  
+    </BrowserRouter>
 );
+<<<<<<< HEAD
 
 const view = function( e ) {
     e.preventDefault()
@@ -27,3 +28,5 @@ window.onload = function() {
         element.onclick = view
     });
 }
+=======
+>>>>>>> 74c5f47e0f9786c89b45061db8dfa96a3f64d55e
