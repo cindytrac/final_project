@@ -22,7 +22,7 @@ class EventCalendar extends React.Component {
             body,
             headers: {
                 'Content-Type': 'application/json'
-            }
+    }
         })
         // .then(response => response.json())
         // .then(json => {
@@ -47,8 +47,8 @@ class EventCalendar extends React.Component {
         })
         .then(res => res.json())
         .then(json => {
-            this.setState({ name: json.name })
-            this.setState({ ready: true})
+        this.setState({ name: json.name })
+        this.setState({ ready: true})
         })
     }
 
